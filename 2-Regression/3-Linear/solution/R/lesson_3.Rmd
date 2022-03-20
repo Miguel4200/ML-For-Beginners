@@ -8,6 +8,8 @@ output:
     toc: yes
     toc_float: yes
     code_download: yes
+  pdf_document:
+    toc: yes
 ---
 
 ## Linear and Polynomial Regression for Pumpkin Pricing - Lesson 3
@@ -34,29 +36,11 @@ As a reminder, you are loading this data so as to ask questions of it.
 
 In the previous lesson, you created a `tibble` (a modern reimagining of the data frame) and populated it with part of the original dataset, standardizing the pricing by the bushel. By doing that, however, you were only able to gather about 400 data points and only for the fall months. Maybe we can get a little more detail about the nature of the data by cleaning it more? We'll see... 🕵️‍♀️
 
-For this task, we'll require the following packages:
 
--   `tidyverse`: The [tidyverse](https://www.tidyverse.org/) is a [collection of R packages](https://www.tidyverse.org/packages) designed to makes data science faster, easier and more fun!
 
--   `tidymodels`: The [tidymodels](https://www.tidymodels.org/) framework is a [collection of packages](https://www.tidymodels.org/packages/) for modeling and machine learning.
 
--   `janitor`: The [janitor package](https://github.com/sfirke/janitor) provides simple little tools for examining and cleaning dirty data.
 
--   `corrplot`: The [corrplot package](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) provides a visual exploratory tool on correlation matrix that supports automatic variable reordering to help detect hidden patterns among variables.
 
-You can have them installed as:
-
-`install.packages(c("tidyverse", "tidymodels", "janitor", "corrplot"))`
-
-The script below checks whether you have the packages required to complete this module and installs them for you in case they are missing.
-
-```{r, message=F, warning=F}
-suppressWarnings(if (!require("pacman")) install.packages("pacman"))
-
-pacman::p_load(tidyverse, tidymodels, janitor, corrplot)
-```
-
-We'll later load these awesome packages and make them available in our current R session. (This is for mere illustration, `pacman::p_load()` already did that for you)
 
 ## 1. A linear regression line
 
@@ -122,7 +106,8 @@ library(tidyverse)
 library(lubridate)
 
 # Import the pumpkins data
-pumpkins <- read_csv(file = "https://raw.githubusercontent.com/microsoft/ML-For-Beginners/main/2-Regression/data/US-pumpkins.csv")
+setwd("C:/Users/HP/Documents/repositorio_ML/ML-For-Beginners/2-Regression/data")
+pumpkins <- read_csv(file = "US-pumpkins.csv")
 
 
 # Get a glimpse and dimensions of the data
