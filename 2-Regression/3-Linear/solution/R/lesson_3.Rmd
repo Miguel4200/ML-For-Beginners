@@ -1,6 +1,8 @@
 ---
 title: 'Build a regression model: linear and polynomial regression models'
 output:
+  pdf_document:
+    toc: yes
   html_document:
     df_print: paged
     theme: flatly
@@ -8,8 +10,6 @@ output:
     toc: yes
     toc_float: yes
     code_download: yes
-  pdf_document:
-    toc: yes
 ---
 
 ## Linear and Polynomial Regression for Pumpkin Pricing - Lesson 3
@@ -130,14 +130,17 @@ pumpkins %>%
 
 ```
 
-🤔 We can do better. Let's make these column names `friendR` by converting them to the [snake_case](https://en.wikipedia.org/wiki/Snake_case) convention using `janitor::clean_names`. To find out more about this function: `?clean_names`
 
-```{r friendR}
+
+```{r}
 # Clean names to the snake_case convention
+library(janitor)
+library(snakecase)
 pumpkins <- pumpkins %>% 
   clean_names(case = "snake")
 
-# Return column names
+# Return column names limpios, case snake es el caso por default
+#ej "% successful (2009)" lo convierte percent_successful_2009
 pumpkins %>% 
   names()
 
@@ -248,6 +251,7 @@ In this section, we'll explore another amazing Tidymodels package: [recipes](htt
 Now, let's create a recipe that prepares our data for modelling by substituting a unique integer for all the observations in the predictor columns:
 
 ```{r pumpkins_recipe}
+library(recipes)
 # Specify a recipe
 pumpkins_recipe <- recipe(price ~ ., data = new_pumpkins) %>% 
   step_integer(all_predictors(), zero_based = TRUE)
@@ -270,7 +274,7 @@ That's an awesome thought! You see, once your recipe is defined, you can estimat
 
 For that, you'll need two more verbs: `prep()` and `bake()` and as always, our little R friends by [`Allison Horst`](https://github.com/allisonhorst/stats-illustrations) help you in understanding this better!
 
-![Artwork by \@allison_horst](../images/recipes.png){width="550"}
+
 
 [`prep()`](https://recipes.tidymodels.org/reference/prep.html): estimates the required parameters from a training set that can be later applied to other data sets. For instance, for a given predictor column, what observation will be assigned integer 0 or 1 or 2 etc
 
@@ -343,6 +347,7 @@ To do this, we'll first split the data such that 80% goes into training and 20% 
 
 ```{r lm_rec_spec}
 set.seed(2056)
+library(rsample)
 # Split the data into training and test sets
 pumpkins_split <- new_pumpkins %>% 
   initial_split(prop = 0.8)
@@ -359,7 +364,7 @@ lm_pumpkins_recipe <- recipe(price ~ package, data = pumpkins_train) %>%
   step_integer(all_predictors(), zero_based = TRUE)
 
 
-
+library(parsnip)
 # Create a linear model specification
 lm_spec <- linear_reg() %>% 
   set_engine("lm") %>% 
@@ -375,6 +380,7 @@ In Tidymodels, this convenient object is called a [`workflow`](https://workflows
 So let's bundle everything up into a workflow!📦
 
 ```{r lm_workflow}
+library("workflows")
 # Hold modelling components in a workflow
 lm_wf <- workflow() %>% 
   add_recipe(lm_pumpkins_recipe) %>% 
@@ -433,6 +439,8 @@ In Tidymodels, we do this using `yardstick::metrics()`! For linear regression, l
 -   `Coefficient of Determination (usually known as R-squared or R2)`: A relative metric in which the higher the value, the better the fit of the model. In essence, this metric represents how much of the variance between predicted and actual label values the model is able to explain.
 
 ```{r lm_yardstick}
+library(yardstick)
+
 # Evaluate performance of linear regression
 metrics(data = lm_results,
         truth = price,

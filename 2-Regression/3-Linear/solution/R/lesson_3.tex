@@ -1,0 +1,1486 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Build a regression model: linear and polynomial regression models},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Build a regression model: linear and polynomial regression
+models}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\hypertarget{linear-and-polynomial-regression-for-pumpkin-pricing---lesson-3}{%
+\subsection{Linear and Polynomial Regression for Pumpkin Pricing -
+Lesson
+3}\label{linear-and-polynomial-regression-for-pumpkin-pricing---lesson-3}}
+
+\begin{figure}
+\centering
+\includegraphics[width=8.33333in,height=\textheight]{../../images/linear-polynomial.png}
+\caption{Infographic by Dasani Madipalli}
+\end{figure}
+
+\hypertarget{introduction}{%
+\paragraph{Introduction}\label{introduction}}
+
+So far you have explored what regression is with sample data gathered
+from the pumpkin pricing dataset that we will use throughout this
+lesson. You have also visualized it using \texttt{ggplot2}.💪
+
+Now you are ready to dive deeper into regression for ML. In this lesson,
+you will learn more about two types of regression: \emph{basic linear
+regression} and \emph{polynomial regression}, along with some of the
+math underlying these techniques.
+
+\begin{quote}
+Throughout this curriculum, we assume minimal knowledge of math, and
+seek to make it accessible for students coming from other fields, so
+watch for notes, 🧮 callouts, diagrams, and other learning tools to aid
+in comprehension.
+\end{quote}
+
+\hypertarget{preparation}{%
+\paragraph{Preparation}\label{preparation}}
+
+As a reminder, you are loading this data so as to ask questions of it.
+
+\begin{itemize}
+\item
+  When is the best time to buy pumpkins?
+\item
+  What price can I expect of a case of miniature pumpkins?
+\item
+  Should I buy them in half-bushel baskets or by the 1 1/9 bushel box?
+  Let's keep digging into this data.
+\end{itemize}
+
+In the previous lesson, you created a \texttt{tibble} (a modern
+reimagining of the data frame) and populated it with part of the
+original dataset, standardizing the pricing by the bushel. By doing
+that, however, you were only able to gather about 400 data points and
+only for the fall months. Maybe we can get a little more detail about
+the nature of the data by cleaning it more? We'll see\ldots{} 🕵️‍♀️
+
+\hypertarget{a-linear-regression-line}{%
+\subsection{1. A linear regression
+line}\label{a-linear-regression-line}}
+
+As you learned in Lesson 1, the goal of a linear regression exercise is
+to be able to plot a \emph{line} \emph{of} \emph{best fit} to:
+
+\begin{itemize}
+\item
+  \textbf{Show variable relationships}. Show the relationship between
+  variables
+\item
+  \textbf{Make predictions}. Make accurate predictions on where a new
+  data point would fall in relationship to that line.
+\end{itemize}
+
+To draw this type of line, we use a statistical technique called
+\textbf{Least-Squares Regression}. The term \texttt{least-squares} means
+that all the data points surrounding the regression line are squared and
+then added up. Ideally, that final sum is as small as possible, because
+we want a low number of errors, or \texttt{least-squares}. As such, the
+line of best fit is the line that gives us the lowest value for the sum
+of the squared errors - hence the name \emph{least squares regression}.
+
+We do so since we want to model a line that has the least cumulative
+distance from all of our data points. We also square the terms before
+adding them since we are concerned with its magnitude rather than its
+direction.
+
+\begin{quote}
+\textbf{🧮 Show me the math}
+
+This line, called the \emph{line of best fit} can be expressed by
+\href{https://en.wikipedia.org/wiki/Simple_linear_regression}{an
+equation}:
+
+\begin{verbatim}
+Y = a + bX
+\end{verbatim}
+
+\texttt{X} is the `\texttt{explanatory\ variable} or
+\texttt{predictor}'. \texttt{Y} is the `\texttt{dependent\ variable} or
+\texttt{outcome}'. The slope of the line is \texttt{b} and \texttt{a} is
+the y-intercept, which refers to the value of \texttt{Y} when
+\texttt{X\ =\ 0}.
+
+\begin{figure}
+\centering
+\includegraphics[width=4.16667in,height=\textheight]{../../images/slope.png}
+\caption{Infographic by Jen Looper}
+\end{figure}
+
+First, calculate the slope \texttt{b}.
+
+In other words, and referring to our pumpkin data's original question:
+``predict the price of a pumpkin per bushel by month'', \texttt{X} would
+refer to the price and \texttt{Y} would refer to the month of sale.
+
+\begin{figure}
+\centering
+\includegraphics{../../images/calculation.png}
+\caption{Infographic by Jen Looper}
+\end{figure}
+
+Calculate the value of Y. If you're paying around \$4, it must be April!
+
+The math that calculates the line must demonstrate the slope of the
+line, which is also dependent on the intercept, or where \texttt{Y} is
+situated when \texttt{X\ =\ 0}.
+
+You can observe the method of calculation for these values on the
+\href{https://www.mathsisfun.com/data/least-squares-regression.html}{Math
+is Fun} web site. Also visit
+\href{https://www.mathsisfun.com/data/least-squares-calculator.html}{this
+Least-squares calculator} to watch how the numbers' values impact the
+line.
+\end{quote}
+
+Not so scary, right? 🤓
+
+\hypertarget{correlation}{%
+\paragraph{Correlation}\label{correlation}}
+
+One more term to understand is the \textbf{Correlation Coefficient}
+between given X and Y variables. Using a scatterplot, you can quickly
+visualize this coefficient. A plot with datapoints scattered in a neat
+line have high correlation, but a plot with datapoints scattered
+everywhere between X and Y have a low correlation.
+
+A good linear regression model will be one that has a high (nearer to 1
+than 0) Correlation Coefficient using the Least-Squares Regression
+method with a line of regression.
+
+\hypertarget{a-dance-with-data-creating-a-data-frame-that-will-be-used-for-modelling}{%
+\subsection{\texorpdfstring{\textbf{2. A dance with data: creating a
+data frame that will be used for
+modelling}}{2. A dance with data: creating a data frame that will be used for modelling}}\label{a-dance-with-data-creating-a-data-frame-that-will-be-used-for-modelling}}
+
+\begin{figure}
+\centering
+\includegraphics[width=7.29167in,height=\textheight]{../../images/janitor.jpg}
+\caption{Artwork by @allison\_horst}
+\end{figure}
+
+Load up required libraries and dataset. Convert the data to a data frame
+containing a subset of the data:
+
+\begin{itemize}
+\item
+  Only get pumpkins priced by the bushel
+\item
+  Convert the date to a month
+\item
+  Calculate the price to be an average of high and low prices
+\item
+  Convert the price to reflect the pricing by bushel quantity
+\end{itemize}
+
+\begin{quote}
+We covered these steps in the
+\href{https://github.com/microsoft/ML-For-Beginners/blob/main/2-Regression/2-Data/solution/lesson_2-R.ipynb}{previous
+lesson}.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load the core Tidyverse packages}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(lubridate)}
+
+\CommentTok{\# Import the pumpkins data}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/Users/HP/Documents/repositorio\_ML/ML{-}For{-}Beginners/2{-}Regression/data"}\NormalTok{)}
+\NormalTok{pumpkins }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\AttributeTok{file =} \StringTok{"US{-}pumpkins.csv"}\NormalTok{)}
+
+
+\CommentTok{\# Get a glimpse and dimensions of the data}
+\FunctionTok{glimpse}\NormalTok{(pumpkins)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 1,757
+## Columns: 26
+## $ `City Name`       <chr> "BALTIMORE", "BALTIMORE", "BALTIMORE", "BALTIMORE", ~
+## $ Type              <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ Package           <chr> "24 inch bins", "24 inch bins", "24 inch bins", "24 ~
+## $ Variety           <chr> NA, NA, "HOWDEN TYPE", "HOWDEN TYPE", "HOWDEN TYPE",~
+## $ `Sub Variety`     <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ Grade             <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ Date              <chr> "4/29/17", "5/6/17", "9/24/16", "9/24/16", "11/5/16"~
+## $ `Low Price`       <dbl> 270, 270, 160, 160, 90, 90, 160, 160, 160, 160, 160,~
+## $ `High Price`      <dbl> 280, 280, 160, 160, 100, 100, 170, 160, 170, 160, 17~
+## $ `Mostly Low`      <dbl> 270, 270, 160, 160, 90, 90, 160, 160, 160, 160, 160,~
+## $ `Mostly High`     <dbl> 280, 280, 160, 160, 100, 100, 170, 160, 170, 160, 17~
+## $ Origin            <chr> "MARYLAND", "MARYLAND", "DELAWARE", "VIRGINIA", "MAR~
+## $ `Origin District` <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ `Item Size`       <chr> "lge", "lge", "med", "med", "lge", "lge", "med", "lg~
+## $ Color             <chr> NA, NA, "ORANGE", "ORANGE", "ORANGE", "ORANGE", "ORA~
+## $ Environment       <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ `Unit of Sale`    <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ Quality           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ Condition         <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ Appearance        <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ Storage           <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ Crop              <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ Repack            <chr> "E", "E", "N", "N", "N", "N", "N", "N", "N", "N", "N~
+## $ `Trans Mode`      <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ ...25             <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+## $ ...26             <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Print the first 50 rows of the data set}
+\NormalTok{pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_head}\NormalTok{(}\AttributeTok{n =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 26
+##   `City Name` Type  Package      Variety   `Sub Variety` Grade Date  `Low Price`
+##   <chr>       <chr> <chr>        <chr>     <chr>         <lgl> <chr>       <dbl>
+## 1 BALTIMORE   <NA>  24 inch bins <NA>      <NA>          NA    4/29~         270
+## 2 BALTIMORE   <NA>  24 inch bins <NA>      <NA>          NA    5/6/~         270
+## 3 BALTIMORE   <NA>  24 inch bins HOWDEN T~ <NA>          NA    9/24~         160
+## 4 BALTIMORE   <NA>  24 inch bins HOWDEN T~ <NA>          NA    9/24~         160
+## 5 BALTIMORE   <NA>  24 inch bins HOWDEN T~ <NA>          NA    11/5~          90
+## # ... with 18 more variables: `High Price` <dbl>, `Mostly Low` <dbl>,
+## #   `Mostly High` <dbl>, Origin <chr>, `Origin District` <chr>,
+## #   `Item Size` <chr>, Color <chr>, Environment <lgl>, `Unit of Sale` <chr>,
+## #   Quality <lgl>, Condition <lgl>, Appearance <lgl>, Storage <lgl>,
+## #   Crop <lgl>, Repack <chr>, `Trans Mode` <lgl>, ...25 <lgl>, ...26 <chr>
+\end{verbatim}
+
+In the spirit of sheer adventure, let's explore the
+\href{github.com/sfirke/janitor}{\texttt{janitor\ package}} that
+provides simple functions for examining and cleaning dirty data. For
+instance, let's take a look at the column names for our data:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Return column names}
+\NormalTok{pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{names}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "City Name"       "Type"            "Package"         "Variety"        
+##  [5] "Sub Variety"     "Grade"           "Date"            "Low Price"      
+##  [9] "High Price"      "Mostly Low"      "Mostly High"     "Origin"         
+## [13] "Origin District" "Item Size"       "Color"           "Environment"    
+## [17] "Unit of Sale"    "Quality"         "Condition"       "Appearance"     
+## [21] "Storage"         "Crop"            "Repack"          "Trans Mode"     
+## [25] "...25"           "...26"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Clean names to the snake\_case convention}
+\FunctionTok{library}\NormalTok{(janitor)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'janitor' was built under R version 4.1.3
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'janitor'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     chisq.test, fisher.test
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(snakecase)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'snakecase' was built under R version 4.1.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pumpkins }\OtherTok{\textless{}{-}}\NormalTok{ pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{clean\_names}\NormalTok{(}\AttributeTok{case =} \StringTok{"snake"}\NormalTok{)}
+
+\CommentTok{\# Return column names limpios, case snake es el caso por default}
+\CommentTok{\#ej "\% successful (2009)" lo convierte percent\_successful\_2009}
+\NormalTok{pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{names}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "city_name"       "type"            "package"         "variety"        
+##  [5] "sub_variety"     "grade"           "date"            "low_price"      
+##  [9] "high_price"      "mostly_low"      "mostly_high"     "origin"         
+## [13] "origin_district" "item_size"       "color"           "environment"    
+## [17] "unit_of_sale"    "quality"         "condition"       "appearance"     
+## [21] "storage"         "crop"            "repack"          "trans_mode"     
+## [25] "x25"             "x26"
+\end{verbatim}
+
+Much tidyR 🧹! Now, a dance with the data using \texttt{dplyr} as in the
+previous lesson! 💃
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Select desired columns}
+\NormalTok{pumpkins }\OtherTok{\textless{}{-}}\NormalTok{ pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(variety, city\_name, package, low\_price, high\_price, date)}
+
+
+
+\CommentTok{\# Extract the month from the dates to a new column}
+\NormalTok{pumpkins }\OtherTok{\textless{}{-}}\NormalTok{ pumpkins }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{mdy}\NormalTok{(date),}
+         \AttributeTok{month =} \FunctionTok{month}\NormalTok{(date)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{date)}
+
+
+
+\CommentTok{\# Create a new column for average Price}
+\NormalTok{pumpkins }\OtherTok{\textless{}{-}}\NormalTok{ pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{price =}\NormalTok{ (low\_price }\SpecialCharTok{+}\NormalTok{ high\_price)}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+
+
+\CommentTok{\# Retain only pumpkins with the string "bushel"}
+\NormalTok{new\_pumpkins }\OtherTok{\textless{}{-}}\NormalTok{ pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{str\_detect}\NormalTok{(}\AttributeTok{string =}\NormalTok{ package, }\AttributeTok{pattern =} \StringTok{"bushel"}\NormalTok{))}
+
+
+\CommentTok{\# Normalize the pricing so that you show the pricing per bushel, not per 1 1/9 or 1/2 bushel}
+\NormalTok{new\_pumpkins }\OtherTok{\textless{}{-}}\NormalTok{ new\_pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{price =} \FunctionTok{case\_when}\NormalTok{(}
+    \FunctionTok{str\_detect}\NormalTok{(package, }\StringTok{"1 1/9"}\NormalTok{) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ price}\SpecialCharTok{/}\NormalTok{(}\FloatTok{1.1}\NormalTok{),}
+    \FunctionTok{str\_detect}\NormalTok{(package, }\StringTok{"1/2"}\NormalTok{) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ price}\SpecialCharTok{*}\DecValTok{2}\NormalTok{,}
+    \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}}\NormalTok{ price))}
+
+\CommentTok{\# Relocate column positions}
+\NormalTok{new\_pumpkins }\OtherTok{\textless{}{-}}\NormalTok{ new\_pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{relocate}\NormalTok{(month, }\AttributeTok{.before =}\NormalTok{ variety)}
+
+
+\CommentTok{\# Display the first 5 rows}
+\NormalTok{new\_pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_head}\NormalTok{(}\AttributeTok{n =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 7
+##   month variety  city_name package              low_price high_price price
+##   <dbl> <chr>    <chr>     <chr>                    <dbl>      <dbl> <dbl>
+## 1     9 PIE TYPE BALTIMORE 1 1/9 bushel cartons        15         15  13.6
+## 2     9 PIE TYPE BALTIMORE 1 1/9 bushel cartons        18         18  16.4
+## 3    10 PIE TYPE BALTIMORE 1 1/9 bushel cartons        18         18  16.4
+## 4    10 PIE TYPE BALTIMORE 1 1/9 bushel cartons        17         17  15.5
+## 5    10 PIE TYPE BALTIMORE 1 1/9 bushel cartons        15         15  13.6
+\end{verbatim}
+
+Good job!👌 You now have a clean, tidy data set on which you can build
+your new regression model!
+
+Mind a scatter plot?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Set theme}
+\FunctionTok{theme\_set}\NormalTok{(}\FunctionTok{theme\_light}\NormalTok{())}
+
+\CommentTok{\# Make a scatter plot of month and price}
+\NormalTok{new\_pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ month, }\AttributeTok{y =}\NormalTok{ price)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \FloatTok{1.6}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lesson_3_files/figure-latex/scatter_price_month-1.pdf}
+
+A scatter plot reminds us that we only have month data from August
+through December. We probably need more data to be able to draw
+conclusions in a linear fashion.
+
+Let's take a look at our modelling data again:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Display first 5 rows}
+\NormalTok{new\_pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_head}\NormalTok{(}\AttributeTok{n =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 7
+##   month variety  city_name package              low_price high_price price
+##   <dbl> <chr>    <chr>     <chr>                    <dbl>      <dbl> <dbl>
+## 1     9 PIE TYPE BALTIMORE 1 1/9 bushel cartons        15         15  13.6
+## 2     9 PIE TYPE BALTIMORE 1 1/9 bushel cartons        18         18  16.4
+## 3    10 PIE TYPE BALTIMORE 1 1/9 bushel cartons        18         18  16.4
+## 4    10 PIE TYPE BALTIMORE 1 1/9 bushel cartons        17         17  15.5
+## 5    10 PIE TYPE BALTIMORE 1 1/9 bushel cartons        15         15  13.6
+\end{verbatim}
+
+What if we wanted to predict the \texttt{price} of a pumpkin based on
+the \texttt{city} or \texttt{package} columns which are of type
+character? Or even more simply, how could we find the correlation (which
+requires both of its inputs to be numeric) between, say,
+\texttt{package} and \texttt{price}? 🤷🤷
+
+Machine learning models work best with numeric features rather than text
+values, so you generally need to convert categorical features into
+numeric representations.
+
+This means that we have to find a way to reformat our predictors to make
+them easier for a model to use effectively, a process known as
+\texttt{feature\ engineering}.
+
+\hypertarget{preprocessing-data-for-modelling-with-recipes}{%
+\subsection{3. Preprocessing data for modelling with recipes
+👩‍🍳👨‍🍳}\label{preprocessing-data-for-modelling-with-recipes}}
+
+Activities that reformat predictor values to make them easier for a
+model to use effectively has been termed \texttt{feature\ engineering}.
+
+Different models have different preprocessing requirements. For
+instance, least squares requires
+\texttt{encoding\ categorical\ variables} such as month, variety and
+city\_name. This simply involves \texttt{translating} a column with
+\texttt{categorical\ values} into one or more \texttt{numeric\ columns}
+that take the place of the original.
+
+For example, suppose your data includes the following categorical
+feature:
+
+\begin{longtable}[]{@{}c@{}}
+\toprule
+city \\
+\midrule
+\endhead
+Denver \\
+Nairobi \\
+Tokyo \\
+\bottomrule
+\end{longtable}
+
+You can apply \emph{ordinal encoding} to substitute a unique integer
+value for each category, like this:
+
+\begin{longtable}[]{@{}c@{}}
+\toprule
+city \\
+\midrule
+\endhead
+0 \\
+1 \\
+2 \\
+\bottomrule
+\end{longtable}
+
+And that's what we'll do to our data!
+
+In this section, we'll explore another amazing Tidymodels package:
+\href{https://tidymodels.github.io/recipes/}{recipes} - which is
+designed to help you preprocess your data \textbf{before} training your
+model. At its core, a recipe is an object that defines what steps should
+be applied to a data set in order to get it ready for modelling.
+
+Now, let's create a recipe that prepares our data for modelling by
+substituting a unique integer for all the observations in the predictor
+columns:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(recipes)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'recipes' was built under R version 4.1.3
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'recipes'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:stringr':
+## 
+##     fixed
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:stats':
+## 
+##     step
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Specify a recipe}
+\NormalTok{pumpkins\_recipe }\OtherTok{\textless{}{-}} \FunctionTok{recipe}\NormalTok{(price }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data =}\NormalTok{ new\_pumpkins) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{step\_integer}\NormalTok{(}\FunctionTok{all\_predictors}\NormalTok{(), }\AttributeTok{zero\_based =} \ConstantTok{TRUE}\NormalTok{)}
+
+
+\CommentTok{\# Print out the recipe}
+\NormalTok{pumpkins\_recipe}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Recipe
+## 
+## Inputs:
+## 
+##       role #variables
+##    outcome          1
+##  predictor          6
+## 
+## Operations:
+## 
+## Integer encoding for all_predictors()
+\end{verbatim}
+
+Awesome! 👏 We just created our first recipe that specifies an outcome
+(price) and its corresponding predictors and that all the predictor
+columns should be encoded into a set of integers 🙌! Let's quickly break
+it down:
+
+\begin{itemize}
+\item
+  The call to \texttt{recipe()} with a formula tells the recipe the
+  \emph{roles} of the variables using \texttt{new\_pumpkins} data as the
+  reference. For instance the \texttt{price} column has been assigned an
+  \texttt{outcome} role while the rest of the columns have been assigned
+  a \texttt{predictor} role.
+\item
+  \texttt{step\_integer(all\_predictors(),\ zero\_based\ =\ TRUE)}
+  specifies that all the predictors should be converted into a set of
+  integers with the numbering starting at 0.
+\end{itemize}
+
+We are sure you may be having thoughts such as: ``This is so cool!! But
+what if I needed to confirm that the recipes are doing exactly what I
+expect them to do? 🤔''
+
+That's an awesome thought! You see, once your recipe is defined, you can
+estimate the parameters required to actually preprocess the data, and
+then extract the processed data. You don't typically need to do this
+when you use Tidymodels (we'll see the normal convention in just a
+minute-\textgreater{} \texttt{workflows}) but it can come in handy when
+you want to do some kind of sanity check for confirming that recipes are
+doing what you expect.
+
+For that, you'll need two more verbs: \texttt{prep()} and
+\texttt{bake()} and as always, our little R friends by
+\href{https://github.com/allisonhorst/stats-illustrations}{\texttt{Allison\ Horst}}
+help you in understanding this better!
+
+\href{https://recipes.tidymodels.org/reference/prep.html}{\texttt{prep()}}:
+estimates the required parameters from a training set that can be later
+applied to other data sets. For instance, for a given predictor column,
+what observation will be assigned integer 0 or 1 or 2 etc
+
+\href{https://recipes.tidymodels.org/reference/bake.html}{\texttt{bake()}}:
+takes a prepped recipe and applies the operations to any data set.
+
+That said, lets prep and bake our recipes to really confirm that under
+the hood, the predictor columns will be first encoded before a model is
+fit.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Prep the recipe}
+\NormalTok{pumpkins\_prep }\OtherTok{\textless{}{-}} \FunctionTok{prep}\NormalTok{(pumpkins\_recipe)}
+
+\CommentTok{\# Bake the recipe to extract a preprocessed new\_pumpkins data}
+\NormalTok{baked\_pumpkins }\OtherTok{\textless{}{-}} \FunctionTok{bake}\NormalTok{(pumpkins\_prep, }\AttributeTok{new\_data =} \ConstantTok{NULL}\NormalTok{)}
+
+\CommentTok{\# Print out the baked data set}
+\NormalTok{baked\_pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_head}\NormalTok{(}\AttributeTok{n =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 7
+##    month variety city_name package low_price high_price price
+##    <dbl>   <dbl>     <dbl>   <dbl>     <dbl>      <dbl> <dbl>
+##  1     1       3         1       0         5          3  13.6
+##  2     1       3         1       0        10          7  16.4
+##  3     2       3         1       0        10          7  16.4
+##  4     2       3         1       0         9          6  15.5
+##  5     2       3         1       0         5          3  13.6
+##  6     2       3         1       0        10          7  16.4
+##  7     2       3         1       0         9          6  15.5
+##  8     2       3         1       0         9          8  16.1
+##  9     2       3         1       0         5          3  13.6
+## 10     2       3         1       0         9          6  15.5
+\end{verbatim}
+
+Woo-hoo!🥳 The processed data \texttt{baked\_pumpkins} has all it's
+predictors encoded confirming that indeed the preprocessing steps
+defined as our recipe will work as expected. This makes it harder for
+you to read but much more intelligible for Tidymodels! Take some time to
+find out what observation has been mapped to a corresponding integer.
+
+It is also worth mentioning that \texttt{baked\_pumpkins} is a data
+frame that we can perform computations on.
+
+For instance, let's try to find a good correlation between two points of
+your data to potentially build a good predictive model. We'll use the
+function \texttt{cor()} to do this. Type \texttt{?cor()} to find out
+more about the function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Find the correlation between the city\_name and the price}
+\FunctionTok{cor}\NormalTok{(baked\_pumpkins}\SpecialCharTok{$}\NormalTok{city\_name, baked\_pumpkins}\SpecialCharTok{$}\NormalTok{price)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.3236397
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Find the correlation between the package and the price}
+\FunctionTok{cor}\NormalTok{(baked\_pumpkins}\SpecialCharTok{$}\NormalTok{package, baked\_pumpkins}\SpecialCharTok{$}\NormalTok{price)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.6061713
+\end{verbatim}
+
+As it turns out, there's only weak correlation between the City and
+Price. However there's a bit better correlation between the Package and
+its Price. That makes sense, right? Normally, the bigger the produce
+box, the higher the price.
+
+While we are at it, let's also try and visualize a correlation matrix of
+all the columns using the \texttt{corrplot} package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load the corrplot package}
+\FunctionTok{library}\NormalTok{(corrplot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'corrplot' was built under R version 4.1.3
+\end{verbatim}
+
+\begin{verbatim}
+## corrplot 0.92 loaded
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Obtain correlation matrix}
+\NormalTok{corr\_mat }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(baked\_pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+                  \CommentTok{\# Drop columns that are not really informative}
+                  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(low\_price, high\_price)))}
+
+\CommentTok{\# Make a correlation plot between the variables}
+\FunctionTok{corrplot}\NormalTok{(corr\_mat, }\AttributeTok{method =} \StringTok{"shade"}\NormalTok{, }\AttributeTok{shade.col =} \ConstantTok{NA}\NormalTok{, }\AttributeTok{tl.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{tl.srt =} \DecValTok{45}\NormalTok{, }\AttributeTok{addCoef.col =} \StringTok{"black"}\NormalTok{, }\AttributeTok{cl.pos =} \StringTok{"n"}\NormalTok{, }\AttributeTok{order =} \StringTok{"original"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lesson_3_files/figure-latex/corrplot-1.pdf}
+
+🤩🤩 Much better.
+
+A good question to now ask of this data will be:
+`\texttt{What\ price\ can\ I\ expect\ of\ a\ given\ pumpkin\ package?}'
+Let's get right into it!
+
+\begin{quote}
+Note: When you \textbf{\texttt{bake()}} the prepped recipe
+\textbf{\texttt{pumpkins\_prep}} with
+\textbf{\texttt{new\_data\ =\ NULL}}, you extract the processed
+(i.e.~encoded) training data. If you had another data set for example a
+test set and would want to see how a recipe would pre-process it, you
+would simply bake \textbf{\texttt{pumpkins\_prep}} with
+\textbf{\texttt{new\_data\ =\ test\_set}}
+\end{quote}
+
+\hypertarget{build-a-linear-regression-model}{%
+\subsection{4. Build a linear regression
+model}\label{build-a-linear-regression-model}}
+
+\begin{figure}
+\centering
+\includegraphics[width=8.33333in,height=\textheight]{../../images/linear-polynomial.png}
+\caption{Infographic by Dasani Madipalli}
+\end{figure}
+
+Now that we have build a recipe, and actually confirmed that the data
+will be pre-processed appropriately, let's now build a regression model
+to answer the question:
+\texttt{What\ price\ can\ I\ expect\ of\ a\ given\ pumpkin\ package?}
+
+\hypertarget{train-a-linear-regression-model-using-the-training-set}{%
+\paragraph{Train a linear regression model using the training
+set}\label{train-a-linear-regression-model-using-the-training-set}}
+
+As you may have already figured out, the column \emph{price} is the
+\texttt{outcome} variable while the \emph{package} column is the
+\texttt{predictor} variable.
+
+To do this, we'll first split the data such that 80\% goes into training
+and 20\% into test set, then define a recipe that will encode the
+predictor column into a set of integers, then build a model
+specification. We won't prep and bake our recipe since we already know
+it will preprocess the data as expected.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{2056}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(rsample)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'rsample' was built under R version 4.1.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Split the data into training and test sets}
+\NormalTok{pumpkins\_split }\OtherTok{\textless{}{-}}\NormalTok{ new\_pumpkins }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{initial\_split}\NormalTok{(}\AttributeTok{prop =} \FloatTok{0.8}\NormalTok{)}
+
+
+\CommentTok{\# Extract training and test data}
+\NormalTok{pumpkins\_train }\OtherTok{\textless{}{-}} \FunctionTok{training}\NormalTok{(pumpkins\_split)}
+\NormalTok{pumpkins\_test }\OtherTok{\textless{}{-}} \FunctionTok{testing}\NormalTok{(pumpkins\_split)}
+
+
+
+\CommentTok{\# Create a recipe for preprocessing the data}
+\NormalTok{lm\_pumpkins\_recipe }\OtherTok{\textless{}{-}} \FunctionTok{recipe}\NormalTok{(price }\SpecialCharTok{\textasciitilde{}}\NormalTok{ package, }\AttributeTok{data =}\NormalTok{ pumpkins\_train) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{step\_integer}\NormalTok{(}\FunctionTok{all\_predictors}\NormalTok{(), }\AttributeTok{zero\_based =} \ConstantTok{TRUE}\NormalTok{)}
+
+
+\FunctionTok{library}\NormalTok{(parsnip)}
+\CommentTok{\# Create a linear model specification}
+\NormalTok{lm\_spec }\OtherTok{\textless{}{-}} \FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Good job! Now that we have a recipe and a model specification, we need
+to find a way of bundling them together into an object that will first
+preprocess the data (prep+bake behind the scenes), fit the model on the
+preprocessed data and also allow for potential post-processing
+activities. How's that for your peace of mind!🤩
+
+In Tidymodels, this convenient object is called a
+\href{https://workflows.tidymodels.org/}{\texttt{workflow}} and
+conveniently holds your modeling components! This is what we'd call
+\emph{pipelines} in \emph{Python}.
+
+So let's bundle everything up into a workflow!📦
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(}\StringTok{"workflows"}\NormalTok{)}
+\CommentTok{\# Hold modelling components in a workflow}
+\NormalTok{lm\_wf }\OtherTok{\textless{}{-}} \FunctionTok{workflow}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_recipe}\NormalTok{(lm\_pumpkins\_recipe) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_model}\NormalTok{(lm\_spec)}
+
+\CommentTok{\# Print out the workflow}
+\NormalTok{lm\_wf}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## == Workflow ====================================================================
+## Preprocessor: Recipe
+## Model: linear_reg()
+## 
+## -- Preprocessor ----------------------------------------------------------------
+## 1 Recipe Step
+## 
+## * step_integer()
+## 
+## -- Model -----------------------------------------------------------------------
+## Linear Regression Model Specification (regression)
+## 
+## Computational engine: lm
+\end{verbatim}
+
+👌 Into the bargain, a workflow can be fit/trained in much the same way a
+model can.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Train the model}
+\NormalTok{lm\_wf\_fit }\OtherTok{\textless{}{-}}\NormalTok{ lm\_wf }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data =}\NormalTok{ pumpkins\_train)}
+
+\CommentTok{\# Print the model coefficients learned }
+\NormalTok{lm\_wf\_fit}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## == Workflow [trained] ==========================================================
+## Preprocessor: Recipe
+## Model: linear_reg()
+## 
+## -- Preprocessor ----------------------------------------------------------------
+## 1 Recipe Step
+## 
+## * step_integer()
+## 
+## -- Model -----------------------------------------------------------------------
+## 
+## Call:
+## stats::lm(formula = ..y ~ ., data = data)
+## 
+## Coefficients:
+## (Intercept)      package  
+##      19.977        4.884
+\end{verbatim}
+
+From the model output, we can see the coefficients learned during
+training. They represent the coefficients of the line of best fit that
+gives us the lowest overall error between the actual and predicted
+variable.
+
+\hypertarget{evaluate-model-performance-using-the-test-set}{%
+\paragraph{Evaluate model performance using the test
+set}\label{evaluate-model-performance-using-the-test-set}}
+
+It's time to see how the model performed 📏! How do we do this?
+
+Now that we've trained the model, we can use it to make predictions for
+the test\_set using \texttt{parsnip::predict()}. Then we can compare
+these predictions to the actual label values to evaluate how well (or
+not!) the model is working.
+
+Let's start with making predictions for the test set then bind the
+columns to the test set.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Make predictions for the test set}
+\NormalTok{predictions }\OtherTok{\textless{}{-}}\NormalTok{ lm\_wf\_fit }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{predict}\NormalTok{(}\AttributeTok{new\_data =}\NormalTok{ pumpkins\_test)}
+
+
+\CommentTok{\# Bind predictions to the test set}
+\NormalTok{lm\_results }\OtherTok{\textless{}{-}}\NormalTok{ pumpkins\_test }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\FunctionTok{c}\NormalTok{(package, price)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{bind\_cols}\NormalTok{(predictions)}
+
+
+\CommentTok{\# Print the first ten rows of the tibble}
+\NormalTok{lm\_results }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_head}\NormalTok{(}\AttributeTok{n =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 3
+##    package              price .pred
+##    <chr>                <dbl> <dbl>
+##  1 1 1/9 bushel cartons  13.6  20.0
+##  2 1 1/9 bushel cartons  15.5  20.0
+##  3 1 1/9 bushel cartons  16.4  20.0
+##  4 1 1/9 bushel cartons  14.5  20.0
+##  5 1 1/9 bushel cartons  14.5  20.0
+##  6 1/2 bushel cartons    34    29.7
+##  7 1/2 bushel cartons    30    29.7
+##  8 1/2 bushel cartons    33    29.7
+##  9 1/2 bushel cartons    30    29.7
+## 10 1/2 bushel cartons    33    29.7
+\end{verbatim}
+
+Yes, you have just trained a model and used it to make predictions!🔮 Is
+it any good, let's evaluate the model's performance!
+
+In Tidymodels, we do this using \texttt{yardstick::metrics()}! For
+linear regression, let's focus on the following metrics:
+
+\begin{itemize}
+\item
+  \texttt{Root\ Mean\ Square\ Error\ (RMSE)}: The square root of the
+  \href{https://en.wikipedia.org/wiki/Mean_squared_error}{MSE}. This
+  yields an absolute metric in the same unit as the label (in this case,
+  the price of a pumpkin). The smaller the value, the better the model
+  (in a simplistic sense, it represents the average price by which the
+  predictions are wrong!)
+\item
+  \texttt{Coefficient\ of\ Determination\ (usually\ known\ as\ R-squared\ or\ R2)}:
+  A relative metric in which the higher the value, the better the fit of
+  the model. In essence, this metric represents how much of the variance
+  between predicted and actual label values the model is able to
+  explain.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(yardstick)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'yardstick' was built under R version 4.1.3
+\end{verbatim}
+
+\begin{verbatim}
+## For binary classification, the first factor level is assumed to be the event.
+## Use the argument `event_level = "second"` to alter this as needed.
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'yardstick'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:readr':
+## 
+##     spec
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Evaluate performance of linear regression}
+\FunctionTok{metrics}\NormalTok{(}\AttributeTok{data =}\NormalTok{ lm\_results,}
+        \AttributeTok{truth =}\NormalTok{ price,}
+        \AttributeTok{estimate =}\NormalTok{ .pred)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   .metric .estimator .estimate
+##   <chr>   <chr>          <dbl>
+## 1 rmse    standard       7.56 
+## 2 rsq     standard       0.449
+## 3 mae     standard       5.81
+\end{verbatim}
+
+There goes the model performance. Let's see if we can get a better
+indication by visualizing a scatter plot of the package and price then
+use the predictions made to overlay a line of best fit.
+
+This means we'll have to prep and bake the test set in order to encode
+the package column then bind this to the predictions made by our model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Encode package column}
+\NormalTok{package\_encode }\OtherTok{\textless{}{-}}\NormalTok{ lm\_pumpkins\_recipe }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{prep}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{bake}\NormalTok{(}\AttributeTok{new\_data =}\NormalTok{ pumpkins\_test) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(package)}
+
+
+\CommentTok{\# Bind encoded package column to the results}
+\NormalTok{lm\_results }\OtherTok{\textless{}{-}}\NormalTok{ lm\_results }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{bind\_cols}\NormalTok{(package\_encode }\SpecialCharTok{\%\textgreater{}\%} 
+              \FunctionTok{rename}\NormalTok{(}\AttributeTok{package\_integer =}\NormalTok{ package)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{relocate}\NormalTok{(package\_integer, }\AttributeTok{.after =}\NormalTok{ package)}
+
+
+\CommentTok{\# Print new results data frame}
+\NormalTok{lm\_results }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_head}\NormalTok{(}\AttributeTok{n =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 4
+##   package              package_integer price .pred
+##   <chr>                          <dbl> <dbl> <dbl>
+## 1 1 1/9 bushel cartons               0  13.6  20.0
+## 2 1 1/9 bushel cartons               0  15.5  20.0
+## 3 1 1/9 bushel cartons               0  16.4  20.0
+## 4 1 1/9 bushel cartons               0  14.5  20.0
+## 5 1 1/9 bushel cartons               0  14.5  20.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Make a scatter plot}
+\NormalTok{lm\_results }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ package\_integer, }\AttributeTok{y =}\NormalTok{ price)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \FloatTok{1.6}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Overlay a line of best fit}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ .pred), }\AttributeTok{color =} \StringTok{"orange"}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"package"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lesson_3_files/figure-latex/lm_plot-1.pdf}
+
+Great! As you can see, the linear regression model does not really well
+generalize the relationship between a package and its corresponding
+price.
+
+🎃 Congratulations, you just created a model that can help predict the
+price of a few varieties of pumpkins. Your holiday pumpkin patch will be
+beautiful. But you can probably create a better model!
+
+\hypertarget{build-a-polynomial-regression-model}{%
+\subsection{5. Build a polynomial regression
+model}\label{build-a-polynomial-regression-model}}
+
+\begin{figure}
+\centering
+\includegraphics[width=8.33333in,height=\textheight]{../../images/linear-polynomial.png}
+\caption{Infographic by Dasani Madipalli}
+\end{figure}
+
+Sometimes our data may not have a linear relationship, but we still want
+to predict an outcome. Polynomial regression can help us make
+predictions for more complex non-linear relationships.
+
+Take for instance the relationship between the package and price for our
+pumpkins data set. While sometimes there's a linear relationship between
+variables - the bigger the pumpkin in volume, the higher the price -
+sometimes these relationships can't be plotted as a plane or straight
+line.
+
+\begin{quote}
+✅ Here are \href{https://online.stat.psu.edu/stat501/lesson/9/9.8}{some
+more examples} of data that could use polynomial regression
+
+Take another look at the relationship between Variety to Price in the
+previous plot. Does this scatterplot seem like it should necessarily be
+analyzed by a straight line? Perhaps not. In this case, you can try
+polynomial regression.
+
+✅ Polynomials are mathematical expressions that might consist of one or
+more variables and coefficients
+\end{quote}
+
+\hypertarget{train-a-polynomial-regression-model-using-the-training-set}{%
+\paragraph{Train a polynomial regression model using the training
+set}\label{train-a-polynomial-regression-model-using-the-training-set}}
+
+Polynomial regression creates a \emph{curved line} to better fit
+nonlinear data.
+
+Let's see whether a polynomial model will perform better in making
+predictions. We'll follow a somewhat similar procedure as we did before:
+
+\begin{itemize}
+\item
+  Create a recipe that specifies the preprocessing steps that should be
+  carried out on our data to get it ready for modelling i.e: encoding
+  predictors and computing polynomials of degree \emph{n}
+\item
+  Build a model specification
+\item
+  Bundle the recipe and model specification into a workflow
+\item
+  Create a model by fitting the workflow
+\item
+  Evaluate how well the model performs on the test data
+\end{itemize}
+
+Let's get right into it!
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Specify a recipe}
+\NormalTok{poly\_pumpkins\_recipe }\OtherTok{\textless{}{-}}
+  \FunctionTok{recipe}\NormalTok{(price }\SpecialCharTok{\textasciitilde{}}\NormalTok{ package, }\AttributeTok{data =}\NormalTok{ pumpkins\_train) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{step\_integer}\NormalTok{(}\FunctionTok{all\_predictors}\NormalTok{(), }\AttributeTok{zero\_based =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{step\_poly}\NormalTok{(}\FunctionTok{all\_predictors}\NormalTok{(), }\AttributeTok{degree =} \DecValTok{4}\NormalTok{)}
+
+
+\CommentTok{\# Create a model specification}
+\NormalTok{poly\_spec }\OtherTok{\textless{}{-}} \FunctionTok{linear\_reg}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_engine}\NormalTok{(}\StringTok{"lm"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{set\_mode}\NormalTok{(}\StringTok{"regression"}\NormalTok{)}
+
+
+\CommentTok{\# Bundle recipe and model spec into a workflow}
+\NormalTok{poly\_wf }\OtherTok{\textless{}{-}} \FunctionTok{workflow}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_recipe}\NormalTok{(poly\_pumpkins\_recipe) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{add\_model}\NormalTok{(poly\_spec)}
+
+
+\CommentTok{\# Create a model}
+\NormalTok{poly\_wf\_fit }\OtherTok{\textless{}{-}}\NormalTok{ poly\_wf }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{fit}\NormalTok{(}\AttributeTok{data =}\NormalTok{ pumpkins\_train)}
+
+
+\CommentTok{\# Print learned model coefficients}
+\NormalTok{poly\_wf\_fit}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## == Workflow [trained] ==========================================================
+## Preprocessor: Recipe
+## Model: linear_reg()
+## 
+## -- Preprocessor ----------------------------------------------------------------
+## 2 Recipe Steps
+## 
+## * step_integer()
+## * step_poly()
+## 
+## -- Model -----------------------------------------------------------------------
+## 
+## Call:
+## stats::lm(formula = ..y ~ ., data = data)
+## 
+## Coefficients:
+##    (Intercept)  package_poly_1  package_poly_2  package_poly_3  package_poly_4  
+##         27.818         104.444        -113.001         -56.399           1.044
+\end{verbatim}
+
+\hypertarget{evaluate-model-performance}{%
+\paragraph{Evaluate model
+performance}\label{evaluate-model-performance}}
+
+👏👏You've built a polynomial model let's make predictions on the test
+set!
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Make price predictions on test data}
+\NormalTok{poly\_results }\OtherTok{\textless{}{-}}\NormalTok{ poly\_wf\_fit }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{predict}\NormalTok{(}\AttributeTok{new\_data =}\NormalTok{ pumpkins\_test) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{bind\_cols}\NormalTok{(pumpkins\_test }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(}\FunctionTok{c}\NormalTok{(package, price))) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{relocate}\NormalTok{(.pred, }\AttributeTok{.after =} \FunctionTok{last\_col}\NormalTok{())}
+
+
+\CommentTok{\# Print the results}
+\NormalTok{poly\_results }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_head}\NormalTok{(}\AttributeTok{n =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 3
+##    package              price .pred
+##    <chr>                <dbl> <dbl>
+##  1 1 1/9 bushel cartons  13.6  15.7
+##  2 1 1/9 bushel cartons  15.5  15.7
+##  3 1 1/9 bushel cartons  16.4  15.7
+##  4 1 1/9 bushel cartons  14.5  15.7
+##  5 1 1/9 bushel cartons  14.5  15.7
+##  6 1/2 bushel cartons    34    34.8
+##  7 1/2 bushel cartons    30    34.8
+##  8 1/2 bushel cartons    33    34.8
+##  9 1/2 bushel cartons    30    34.8
+## 10 1/2 bushel cartons    33    34.8
+\end{verbatim}
+
+Woo-hoo , let's evaluate how the model performed on the test\_set using
+\texttt{yardstick::metrics()}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{metrics}\NormalTok{(}\AttributeTok{data =}\NormalTok{ poly\_results, }\AttributeTok{truth =}\NormalTok{ price, }\AttributeTok{estimate =}\NormalTok{ .pred)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   .metric .estimator .estimate
+##   <chr>   <chr>          <dbl>
+## 1 rmse    standard       3.59 
+## 2 rsq     standard       0.885
+## 3 mae     standard       2.77
+\end{verbatim}
+
+🤩🤩 Much better performance.
+
+The \texttt{rmse} decreased from about 7. to about 3. an indication that
+of a reduced error between the actual price and the predicted price. You
+can \emph{loosely} interpret this as meaning that on average, incorrect
+predictions are wrong by around \$3. The \texttt{rsq} increased from
+about 0.4 to 0.8.
+
+All these metrics indicate that the polynomial model performs way better
+than the linear model. Good job!
+
+Let's see if we can visualize this!
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Bind encoded package column to the results}
+\NormalTok{poly\_results }\OtherTok{\textless{}{-}}\NormalTok{ poly\_results }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{bind\_cols}\NormalTok{(package\_encode }\SpecialCharTok{\%\textgreater{}\%} 
+              \FunctionTok{rename}\NormalTok{(}\AttributeTok{package\_integer =}\NormalTok{ package)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{relocate}\NormalTok{(package\_integer, }\AttributeTok{.after =}\NormalTok{ package)}
+
+
+\CommentTok{\# Print new results data frame}
+\NormalTok{poly\_results }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{slice\_head}\NormalTok{(}\AttributeTok{n =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 4
+##   package              package_integer price .pred
+##   <chr>                          <dbl> <dbl> <dbl>
+## 1 1 1/9 bushel cartons               0  13.6  15.7
+## 2 1 1/9 bushel cartons               0  15.5  15.7
+## 3 1 1/9 bushel cartons               0  16.4  15.7
+## 4 1 1/9 bushel cartons               0  14.5  15.7
+## 5 1 1/9 bushel cartons               0  14.5  15.7
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Make a scatter plot}
+\NormalTok{poly\_results }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ package\_integer, }\AttributeTok{y =}\NormalTok{ price)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \FloatTok{1.6}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Overlay a line of best fit}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ .pred), }\AttributeTok{color =} \StringTok{"midnightblue"}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.2}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"package"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lesson_3_files/figure-latex/poly_viz-1.pdf}
+
+You can see a curved line that fits your data better! 🤩
+
+You can make this more smoother by passing a polynomial formula to
+\texttt{geom\_smooth} like this:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Make a scatter plot}
+\NormalTok{poly\_results }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ package\_integer, }\AttributeTok{y =}\NormalTok{ price)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \FloatTok{1.6}\NormalTok{) }\SpecialCharTok{+}
+  \CommentTok{\# Overlay a line of best fit}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =}\NormalTok{ lm, }\AttributeTok{formula =}\NormalTok{ y }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(x, }\AttributeTok{degree =} \DecValTok{4}\NormalTok{), }\AttributeTok{color =} \StringTok{"midnightblue"}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.2}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"package"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lesson_3_files/figure-latex/smooth curve-1.pdf}
+
+Much like a smooth curve!🤩
+
+Here's how you would make a new prediction:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Make a hypothetical data frame}
+\NormalTok{hypo\_tibble }\OtherTok{\textless{}{-}} \FunctionTok{tibble}\NormalTok{(}\AttributeTok{package =} \StringTok{"bushel baskets"}\NormalTok{)}
+
+\CommentTok{\# Make predictions using linear model}
+\NormalTok{lm\_pred }\OtherTok{\textless{}{-}}\NormalTok{ lm\_wf\_fit }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{predict}\NormalTok{(}\AttributeTok{new\_data =}\NormalTok{ hypo\_tibble)}
+
+\CommentTok{\# Make predictions using polynomial model}
+\NormalTok{poly\_pred }\OtherTok{\textless{}{-}}\NormalTok{ poly\_wf\_fit }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{predict}\NormalTok{(}\AttributeTok{new\_data =}\NormalTok{ hypo\_tibble)}
+
+\CommentTok{\# Return predictions in a list}
+\FunctionTok{list}\NormalTok{(}\StringTok{"linear model prediction"} \OtherTok{=}\NormalTok{ lm\_pred, }
+     \StringTok{"polynomial model prediction"} \OtherTok{=}\NormalTok{ poly\_pred)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $`linear model prediction`
+## # A tibble: 1 x 1
+##   .pred
+##   <dbl>
+## 1  34.6
+## 
+## $`polynomial model prediction`
+## # A tibble: 1 x 1
+##   .pred
+##   <dbl>
+## 1  46.6
+\end{verbatim}
+
+The \texttt{polynomial\ model} prediction does make sense, given the
+scatter plots of \texttt{price} and \texttt{package}! And, if this is a
+better model than the previous one, looking at the same data, you need
+to budget for these more expensive pumpkins!
+
+🏆 Well done! You created two regression models in one lesson. In the
+final section on regression, you will learn about logistic regression to
+determine categories.
+
+\hypertarget{challenge}{%
+\subsection{\texorpdfstring{\textbf{🚀Challenge}}{🚀Challenge}}\label{challenge}}
+
+Test several different variables in this notebook to see how correlation
+corresponds to model accuracy.
+
+\hypertarget{post-lecture-quiz}{%
+\subsection{\texorpdfstring{\href{https://white-water-09ec41f0f.azurestaticapps.net/quiz/14/}{\textbf{Post-lecture
+quiz}}}{Post-lecture quiz}}\label{post-lecture-quiz}}
+
+\hypertarget{review-self-study}{%
+\subsection{\texorpdfstring{\textbf{Review \& Self
+Study}}{Review \& Self Study}}\label{review-self-study}}
+
+In this lesson we learned about Linear Regression. There are other
+important types of Regression. Read about Stepwise, Ridge, Lasso and
+Elasticnet techniques. A good course to study to learn more is the
+\href{https://online.stanford.edu/courses/sohs-ystatslearning-statistical-learning}{Stanford
+Statistical Learning course}
+
+If you want to learn more about how to use the amazing Tidymodels
+framework, please check out the following resources:
+
+\begin{itemize}
+\item
+  Tidymodels website: \href{https://www.tidymodels.org/start/}{Get
+  started with Tidymodels}
+\item
+  Max Kuhn and Julia Silge, \href{https://www.tmwr.org/}{\emph{Tidy
+  Modeling with R}}\emph{.}
+\end{itemize}
+
+\textbf{THANK YOU TO:}
+
+\href{https://twitter.com/allison_horst?lang=en}{Allison Horst} for
+creating the amazing illustrations that make R more welcoming and
+engaging. Find more illustrations at her
+\href{https://www.google.com/url?q=https://github.com/allisonhorst/stats-illustrations\&sa=D\&source=editors\&ust=1626380772530000\&usg=AOvVaw3zcfyCizFQZpkSLzxiiQEM}{gallery}.
+
+\end{document}
